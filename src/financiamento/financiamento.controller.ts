@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPipe, Res } from '@nestjs/common';
 import { FinanciamentoService } from './financiamento.service';
 import { CreateFinanciamentoDto } from './dto/create-financiamento.dto';
 import { UpdateFinanciamentoDto } from './dto/update-financiamento.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { FiltroFinanciamentoDto } from './dto/filtro-finaciamento.dto';
 
 @ApiTags('Financiamento')
 @Controller('financiamento')
@@ -15,7 +16,10 @@ export class FinanciamentoController {
   }
 
   @Get()
-  findAll() {
+  findAll(
+    @Query() query: FiltroFinanciamentoDto,
+    @Res() res: Response,
+  ) {
     return this.financiamentoService.findAll();
   }
 

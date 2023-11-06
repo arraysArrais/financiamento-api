@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { DataType } from 'sequelize-typescript';
 import { StatusFinanciamentoEnum } from '../enum/status_financiamento.enum';
 
-export class CreateFinanciamentoDto {
+export class FiltroFinanciamentoDto {
 
     @ApiProperty({
         example: 'GOL 1.6 MSI 8V 2022 FLEX',
@@ -11,11 +11,10 @@ export class CreateFinanciamentoDto {
     objeto: string;
 
     @ApiProperty({
-        example: StatusFinanciamentoEnum.PENDENTE,
-        description: 'Status do financiamento',
-        type: DataType.ENUM<StatusFinanciamentoEnum>
+      enum: StatusFinanciamentoEnum,
+      enumName: 'StatusFinanciamentoEnum',
     })
-    status: string;
+    status: StatusFinanciamentoEnum;
 
     @ApiProperty({
         example: 1,
