@@ -32,7 +32,11 @@ export class AuthController {
 
       if (credentialCheck.message == 'Token válido') {
         let user = await this.userModel.findByPk(credentialCheck.id);
-        res.status(200).send({message:'Autorizado', user,})
+        res.status(200).send({message:'Autorizado', user:{
+          id: user.id,
+          fullname: user.fullname,
+          email: user.email,
+        }})
       }
       else {
         res.status(401).send({message:'Não autorizado'})
