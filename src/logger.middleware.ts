@@ -5,7 +5,7 @@ export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
 
     //response log
-    /* const rawResponse = res.write;
+    const rawResponse = res.write;
     const rawResponseEnd = res.end; const chunkBuffers = []; 
     res.write = (...chunks) => {
       const resArgs = [];
@@ -33,13 +33,14 @@ export class LoggerMiddleware implements NestMiddleware {
         },
       }; console.log('res: ', responseLog); rawResponseEnd.apply(res, resArgs);
       return responseLog as unknown as Response;
-    }; */
+    };
 
     // Gets the request log
     console.log(`req:`, {
       headers: req.headers,
       body: req.body,
       originalUrl: req.originalUrl,
+      method: req.method,
     });    // Ends middleware function execution, hence allowing to move on 
     if (next) {
       next();

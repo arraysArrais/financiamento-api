@@ -31,7 +31,10 @@ async function bootstrap() {
 
   SwaggerModule.setup('api/docs', app, SwaggerDocument);
 
-  await app.listen(process.env.APP_PORT);
+  await app.listen(process.env.APP_PORT, () =>{
+    console.log("App rodando na porta "+process.env.APP_PORT)
+  });
+  
 }
 
 bootstrap();
