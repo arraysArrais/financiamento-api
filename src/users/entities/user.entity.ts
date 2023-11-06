@@ -1,5 +1,5 @@
 
-import { BeforeCreate, BeforeUpdate, Column, DataType, Model, Table } from 'sequelize-typescript';
+import { AutoIncrement, BeforeCreate, BeforeUpdate, Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 const bcrypt = require('bcrypt');
 @Table({
     tableName: 'users',
@@ -10,7 +10,8 @@ const bcrypt = require('bcrypt');
 
 })
 export class User extends Model {
-
+    @PrimaryKey
+    @AutoIncrement
     @Column({
         allowNull: false,
         primaryKey: true,
@@ -18,14 +19,19 @@ export class User extends Model {
     })
     id: number;
 
-    @Column
+    @Column({allowNull: false, type: DataType.STRING})
     email: string;
 
-    @Column
+    @Column({allowNull: false, type: DataType.STRING})
     firstname: string;
 
-    @Column
+    @Column({allowNull: false, type: DataType.STRING})
     lastname: string;
+
+    @Column({type:DataType.VIRTUAL(DataType.STRING)})
+    get fullname(){
+        return `${this.firstname} ${this.lastname}`
+    }
 
     @BeforeCreate
     @BeforeUpdate
@@ -33,6 +39,6 @@ export class User extends Model {
         const password = instance.getDataValue('password');
         instance.setDataValue('password', await bcrypt.hash(password, 10));
     }
-    @Column
+    @Column({allowNull: false, type: DataType.STRING})
     password: string;
 }
