@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { Dialect } from 'sequelize';
+import { FinanciamentoModule } from './financiamento/financiamento.module';
+import { Financiamento } from './financiamento/entities/financiamento.entity';
 
 @Module({
   imports: [
@@ -24,8 +26,8 @@ import { Dialect } from 'sequelize';
     autoLoadModels: true,
     synchronize: true,
     //logging: false,
-    models: [User],
-  }), UsersModule, AuthModule,
+    models: [User, Financiamento],
+  }), UsersModule, AuthModule, FinanciamentoModule,
 
 ],
   controllers: [AppController],
