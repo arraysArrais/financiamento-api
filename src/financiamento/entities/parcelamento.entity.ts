@@ -39,6 +39,19 @@ export class Parcela extends Model {
     })
     status: StatusParcelaEnum
 
+    @Column({
+        allowNull: true,
+        type: DataType.BLOB
+    })
+    img_comprovante: Buffer;
+
+    //mime type da imagem, para renderizar de acordo no front
+    @Column({
+        allowNull: true,
+        type: DataType.STRING
+    })
+    img_comprovante_tipo: string;
+
     //FK
     @ForeignKey(() => Financiamento)
     @Column({ allowNull: false, type: DataType.INTEGER })

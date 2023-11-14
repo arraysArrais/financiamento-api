@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Financiamento } from './entities/financiamento.entity';
 import { Sequelize } from 'sequelize-typescript';
 import { Parcela } from './entities/parcelamento.entity';
+import { StatusParcelaEnum } from './enum/status_parcela.enum';
 const dayjs = require('dayjs')
 
 @Injectable()
@@ -89,5 +90,27 @@ export class FinanciamentoService {
 
   remove(id: number) {
     return `This action removes a #${id} financiamento`;
+  }
+
+  async baixaFatura(id: number, img){
+    let parcela = await this.parcelaModel.findByPk(id);
+    const t = await this.sequelize.transaction();
+
+    try{
+      await parcela.update({
+        img_comprovante: img.buffer,
+        img_comprovante_tipo: img.mimetype,
+        status: StatusParcelaEnum.PAGA
+      });
+      await t.commit();
+      return parcela;
+    }catch(error){
+      await t.rollback();
+      console.log(error)
+    }
+  }
+
+  async getFatura(id: number){
+    return this.parcelaModel.findByPk(id)
   }
 }
