@@ -41,8 +41,6 @@ export class Financiamento extends Model {
         let data_vencimento = new Date(parcela.data_vencimento)
             return (data_vencimento < today && !(parcela.status == StatusParcelaEnum.PAGA))
         });
-
-        console.log(em_atraso)
         return em_atraso.length > 0 ? StatusFinanciamentoEnum.EM_ATRASO : StatusFinanciamentoEnum.EM_DIA
     }
 
