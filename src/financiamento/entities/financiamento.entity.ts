@@ -1,7 +1,9 @@
 
-import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { User } from 'src/users/entities/user.entity';
 import { StatusFinanciamentoEnum } from '../enum/status_financiamento.enum';
+import { Parcela } from './parcelamento.entity';
+import { StatusParcelaEnum } from '../enum/status_parcela.enum';
 @Table({
     tableName: 'financiamento',
     createdAt: 'created_at',
@@ -22,11 +24,27 @@ export class Financiamento extends Model {
     @Column({ allowNull: false, type: DataType.STRING })
     objeto: string;
 
+    /* @Default(StatusFinanciamentoEnum.PENDENTE)
     @Column({
         allowNull: false,
-        type: DataType.ENUM({ values: Object.values(StatusFinanciamentoEnum) })
+        type: DataType.ENUM({ values: Object.values(StatusFinanciamentoEnum) }),
+        
     })
     status: string;
+
+    
+ */
+    @Column({ type: DataType.VIRTUAL(DataType.STRING) })
+    get status() {
+        const today = new Date()
+        const em_atraso = this.parcelas?.filter((parcela) => {
+        let data_vencimento = new Date(parcela.data_vencimento)
+            return (data_vencimento < today && !(parcela.status == StatusParcelaEnum.PAGA))
+        });
+
+        console.log(em_atraso)
+        return em_atraso.length > 0 ? StatusFinanciamentoEnum.EM_ATRASO : StatusFinanciamentoEnum.EM_DIA
+    }
 
     //FK
     @ForeignKey(() => User)
@@ -49,4 +67,7 @@ export class Financiamento extends Model {
         targetKey: 'id'
     })
     declare readonly responsavel: User
+
+    @HasMany(() => Parcela)
+    declare readonly parcelas: Parcela[]
 }
