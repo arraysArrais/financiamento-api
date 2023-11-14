@@ -6,7 +6,7 @@ export class LoggerMiddleware implements NestMiddleware {
 
     //response log
     const rawResponse = res.write;
-    const rawResponseEnd = res.end; const chunkBuffers = []; 
+    const rawResponseEnd = res.end; const chunkBuffers = [];
     res.write = (...chunks) => {
       const resArgs = [];
       for (let i = 0; i < chunks.length; i++) {
@@ -24,10 +24,24 @@ export class LoggerMiddleware implements NestMiddleware {
         resArgs[i] = chunk[i];
       } if (resArgs[0]) {
         chunkBuffers.push(Buffer.from(resArgs[0]));
-      } const body = Buffer.concat(chunkBuffers).toString('utf8'); res.setHeader('origin', 'restjs-req-res-logging-repo'); const responseLog = {
+      }
+      const body = Buffer.concat(chunkBuffers).toString('utf8'); res.setHeader('origin', 'restjs-req-res-logging-repo');
+
+      function isJson(item) {
+        let value = typeof item !== "string" ? JSON.stringify(item) : item;
+        try {
+          value = JSON.parse(value);
+        } catch (e) {
+          return false;
+        }
+
+        return typeof value === "object" && value !== null;
+      }
+
+      const responseLog = {
         response: {
           statusCode: res.statusCode,
-          body: JSON.parse(body) || body || {},
+          body: (isJson(body)) ? JSON.parse(body) : body,
           // Returns a shallow copy of the current outgoing headers
           headers: res.getHeaders(),
         },
