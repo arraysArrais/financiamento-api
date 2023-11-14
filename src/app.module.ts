@@ -10,6 +10,7 @@ import { LoggerMiddleware } from './logger.middleware';
 import { Dialect } from 'sequelize';
 import { FinanciamentoModule } from './financiamento/financiamento.module';
 import { Financiamento } from './financiamento/entities/financiamento.entity';
+import { Parcela } from './financiamento/entities/parcelamento.entity';
 
 @Module({
   imports: [
@@ -25,8 +26,9 @@ import { Financiamento } from './financiamento/entities/financiamento.entity';
     database: process.env.DB_DATABASE,
     autoLoadModels: true,
     synchronize: true,
+    timezone: '-03:00',
     //logging: false,
-    models: [User, Financiamento],
+    models: [User, Financiamento, Parcela],
   }), UsersModule, AuthModule, FinanciamentoModule,
 
 ],

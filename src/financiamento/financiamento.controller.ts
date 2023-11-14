@@ -1,14 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPipe, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPipe, Res, HttpException, HttpStatus } from '@nestjs/common';
 import { FinanciamentoService } from './financiamento.service';
 import { CreateFinanciamentoDto } from './dto/create-financiamento.dto';
 import { UpdateFinanciamentoDto } from './dto/update-financiamento.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FiltroFinanciamentoDto } from './dto/filtro-finaciamento.dto';
+import { Response } from 'express';
 
 @ApiTags('Financiamento')
 @Controller('financiamento')
+@ApiBearerAuth('JWT-auth') //permite autenticação do controller inteiro na swagger ui
 export class FinanciamentoController {
-  constructor(private readonly financiamentoService: FinanciamentoService) {}
+  constructor(private readonly financiamentoService: FinanciamentoService) { }
 
   @Post()
   create(@Body() createFinanciamentoDto: CreateFinanciamentoDto) {
@@ -16,11 +18,18 @@ export class FinanciamentoController {
   }
 
   @Get()
-  findAll(
-    @Query() query: FiltroFinanciamentoDto,
-    @Res() res: Response,
-  ) {
-    return this.financiamentoService.findAll();
+  async findAll(@Query(/* new ValidationPipe() */) query: FiltroFinanciamentoDto, @Res() res: Response) {
+    try {
+      let financiamentos = await this.financiamentoService.findAll(query);
+      if (financiamentos.length == 0) {
+        res.status(404).send({error: 'Registro de financiamento não encontrado'})
+      }
+      else
+        res.status(200).send(financiamentos);
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   @Get(':id')

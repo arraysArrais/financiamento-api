@@ -10,12 +10,12 @@ export class CreateFinanciamentoDto {
     })
     objeto: string;
 
-    @ApiProperty({
+    /* @ApiProperty({
         example: StatusFinanciamentoEnum.PENDENTE,
         description: 'Status do financiamento',
         type: DataType.ENUM<StatusFinanciamentoEnum>
     })
-    status: string;
+    status: string; */
 
     @ApiProperty({
         example: 1,
@@ -28,4 +28,22 @@ export class CreateFinanciamentoDto {
         description: 'Id do usuário responsável pelo financiamento (o usuário no qual o nome está registrado no financiamento)'
     })
     id_responsavel: number;
+
+    @ApiProperty({
+        example: '2023-11-10',
+        description: 'Data do vencimento da primeira parcela'
+    })
+    vencimento_primeira_parcela: Date
+
+    @ApiProperty({
+        example: 12,
+        description: 'Quantidade de parcelas'
+    })
+    qtd_parcelas: number;
+
+    @ApiProperty({
+        example: 1278.00,
+        description: 'Valor da parcela'
+    })
+    valor_parcela: number;
 }
