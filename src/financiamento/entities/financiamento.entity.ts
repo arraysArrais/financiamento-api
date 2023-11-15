@@ -1,9 +1,13 @@
 
-import { AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, Model, PrimaryKey, Scopes, Table } from 'sequelize-typescript';
 import { User } from 'src/users/entities/user.entity';
 import { StatusFinanciamentoEnum } from '../enum/status_financiamento.enum';
 import { Parcela } from './parcelamento.entity';
 import { StatusParcelaEnum } from '../enum/status_parcela.enum';
+import { defaultScope } from '../scopes/financiamentoDefault.scope';
+@Scopes(() => ({
+    defaultFinanciamentoScope:defaultScope
+  }))
 @Table({
     tableName: 'financiamento',
     createdAt: 'created_at',
@@ -11,7 +15,6 @@ import { StatusParcelaEnum } from '../enum/status_parcela.enum';
     deletedAt: 'deleted_at',
     paranoid: true,
 })
-
 export class Financiamento extends Model {
     @PrimaryKey
     @AutoIncrement

@@ -6,6 +6,7 @@ import { Financiamento } from './entities/financiamento.entity';
 import { Sequelize } from 'sequelize-typescript';
 import { Parcela } from './entities/parcelamento.entity';
 import { StatusParcelaEnum } from './enum/status_parcela.enum';
+import { FiltroFinanciamentoDto } from './dto/filtro-finaciamento.dto';
 const dayjs = require('dayjs')
 
 @Injectable()
@@ -56,21 +57,8 @@ export class FinanciamentoService {
     });
   }
 
-  async findAll(queryParams) {
-    return await this.financiamentoModel.findAll({
-      include: [
-        {
-          association: 'parcelas',
-          required: true,
-        },
-      ],
-      order: [
-        ['parcelas', 'data_vencimento', 'ASC'],
-      ],
-      where: {
-        ...queryParams
-      }
-    });
+  async findAll(queryParams: FiltroFinanciamentoDto) {
+    return await this.financiamentoModel.scope({ method: ['defaultFinanciamentoScope', queryParams] }).findAll();
   }
 
   async findOne(id: number) {
