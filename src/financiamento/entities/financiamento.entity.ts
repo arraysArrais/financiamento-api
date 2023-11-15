@@ -47,6 +47,12 @@ export class Financiamento extends Model {
         return em_atraso.length > 0 ? StatusFinanciamentoEnum.EM_ATRASO : StatusFinanciamentoEnum.EM_DIA
     }
 
+    @Column({type: DataType.VIRTUAL(DataType.NUMBER)})
+    get parcelas_pagas(){
+        const parcelas_pagas = this.parcelas?.filter((parcela) => (parcela.status == StatusParcelaEnum.PAGA))
+        return parcelas_pagas.length
+    }
+
     //FK
     @ForeignKey(() => User)
     @Column({ allowNull: false, type: DataType.INTEGER })
