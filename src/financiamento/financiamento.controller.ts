@@ -14,10 +14,21 @@ export class FinanciamentoController {
   constructor(
     private readonly financiamentoService: FinanciamentoService,
     ) { }
-
+  
+  //@ApiConsumes('multipart/form-data') 
   @Post()
-  create(@Body() createFinanciamentoDto: CreateFinanciamentoDto) {
-    return this.financiamentoService.create(createFinanciamentoDto);
+  @UseInterceptors(FileInterceptor('img_objeto'))
+  create(
+    @Body() createFinanciamentoDto: CreateFinanciamentoDto,
+    @UploadedFile(new ParseFilePipe({
+      validators: [
+        new MaxFileSizeValidator({ maxSize: 10000000 }),
+        new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+      ],
+      fileIsRequired:false
+    })) img: Express.Multer.File
+) {
+    return this.financiamentoService.create(createFinanciamentoDto, img);
   }
 
   @Get()

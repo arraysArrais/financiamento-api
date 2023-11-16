@@ -21,17 +21,19 @@ export class FinanciamentoService {
     private readonly sequelize: Sequelize,
   ) { }
 
-  async create(createFinanciamentoDto: CreateFinanciamentoDto) {
+  async create(createFinanciamentoDto: CreateFinanciamentoDto, img) {
     const t = await this.sequelize.transaction();
 
     try {
       var newFinanciamento = await this.financiamentoModel.create({
-        ...createFinanciamentoDto
+        ...createFinanciamentoDto,
+        img_objeto: img.buffer,
+        img_objeto_tipo: img.mimetype,
       }, { transaction: t });
       var vencimento = dayjs(createFinanciamentoDto.vencimento_primeira_parcela);
       for (let i = 0; i < createFinanciamentoDto.qtd_parcelas; i++) {
         await this.parcelaModel.create({
-          data_vencimento: vencimento.format('YYYY-MM-DD'), //primeiro vencimento tem que vir do dto, ou 30 dias após data atual, + cada parcela com o mesmo dia só que do mês seguinte
+          data_vencimento: vencimento.format('YYYY-MM-DD'),
           valor: createFinanciamentoDto.valor_parcela, //valor tem que vir do dto
           id_financiamento: newFinanciamento.id
         }, { transaction: t });
@@ -58,7 +60,7 @@ export class FinanciamentoService {
   }
 
   async findAll(queryParams: FiltroFinanciamentoDto) {
-    return await this.financiamentoModel.scope({ method: ['defaultFinanciamentoScope', queryParams] }).findAll();
+    return this.financiamentoModel.scope({ method: ['defaultFinanciamentoScope', queryParams] }).findAll();
   }
 
   async findOne(id: number) {

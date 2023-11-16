@@ -27,16 +27,31 @@ export class Financiamento extends Model {
     @Column({ allowNull: false, type: DataType.STRING })
     objeto: string;
 
-    /* @Default(StatusFinanciamentoEnum.PENDENTE)
+    /*@Default(StatusFinanciamentoEnum.PENDENTE)
     @Column({
         allowNull: false,
         type: DataType.ENUM({ values: Object.values(StatusFinanciamentoEnum) }),
         
     })
-    status: string;
+    status: string;*/
+    @Column({
+        allowNull: true,
+        type: DataType.BLOB
+    })
+    img_objeto: Buffer;
 
-    
- */
+    @Column({ type: DataType.VIRTUAL(DataType.STRING)})
+    get img_string(){
+        return (this.img_objeto) ? this.img_objeto.toString('base64') : 'N/A';
+    }
+
+    //mime type da imagem, para renderizar de acordo no front
+    @Column({
+        allowNull: true,
+        type: DataType.STRING
+    })
+    img_objeto_tipo: string;
+
     @Column({ type: DataType.VIRTUAL(DataType.STRING) })
     get status() {
         const today = new Date()

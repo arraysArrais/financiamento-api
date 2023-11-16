@@ -2,8 +2,6 @@ import { IncludeOptions } from 'sequelize';
 import { FiltroFinanciamentoDto } from '../dto/filtro-finaciamento.dto';
 
 export function defaultScope(queryParams?: FiltroFinanciamentoDto): IncludeOptions {
-
-  console.log("query params hein barao NO SCOPO VIU", queryParams)
   return {
       include: [
         {
@@ -17,6 +15,6 @@ export function defaultScope(queryParams?: FiltroFinanciamentoDto): IncludeOptio
       ],
       where: {
         ...queryParams
-      }
+      },
   };
 }
