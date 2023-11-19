@@ -90,4 +90,18 @@ export class FinanciamentoController {
   async getParcela(@Param('parcela_id') id: number){
     return this.financiamentoService.getFatura(id)
   }
+
+  @Get('parcelas/:financiamento_id')
+  async findAllParcelas(@Param('financiamento_id') id: number, @Res() res){
+
+    try{
+      let parcelas = await this.financiamentoService.findAllParcelas(id)
+      if(parcelas.length > 0)
+        res.status(200).send(parcelas);
+      else
+        res.status(404).send({error: "Financiamento não encontrado"})
+    }catch(error){
+      console.log(error)
+    }
+  }
 }

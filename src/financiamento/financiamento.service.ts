@@ -103,4 +103,13 @@ export class FinanciamentoService {
   async getFatura(id: number){
     return this.parcelaModel.findByPk(id)
   }
+
+  async findAllParcelas(id: number){
+    return this.parcelaModel.findAll({
+      attributes:['id', 'valor', 'data_vencimento', 'status'],
+      where:{
+        id_financiamento: id
+      }
+    });
+  }
 }
