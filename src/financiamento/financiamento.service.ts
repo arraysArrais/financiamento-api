@@ -109,7 +109,8 @@ export class FinanciamentoService {
       attributes:['id', 'valor', 'data_vencimento', 'status'],
       where:{
         id_financiamento: id
-      }
+      },
+      order:[['data_vencimento', 'ASC']]
     });
   }
 }
