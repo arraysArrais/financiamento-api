@@ -104,4 +104,15 @@ export class FinanciamentoController {
       console.log(error)
     }
   }
+
+  @Get('parcela/comprovante/:parcela_id')
+  async getComprovate(@Param('parcela_id') id: number, @Res() res){
+    try{
+      let base64String = await this.financiamentoService.getComprovante(id)
+      res.status(200).send(base64String)
+    }catch(error){
+      console.log(error)
+    }
+    return this.financiamentoService.getComprovante(id);
+  }
 }

@@ -113,4 +113,15 @@ export class FinanciamentoService {
       order:[['data_vencimento', 'ASC']]
     });
   }
+
+  async getComprovante(id: number){
+    let parcela = await this.parcelaModel.findByPk(id, {
+      attributes:['img_comprovante', 'img_comprovante_tipo']
+    });
+
+    return {
+      comprovante_string: parcela.img_comprovante.toString('base64'),
+      comprovante_tipo: parcela.img_comprovante_tipo
+    }
+  }
 }
