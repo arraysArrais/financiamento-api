@@ -1,0 +1,25 @@
+app = "financiamento-api"
+primary_region = "gru"
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[env]
+  #************* Use secrets for sensitive information ************#
+  #DB_DIALECT=''
+  #DB_HOST=''
+  #DB_PORT=''
+  #DB_USERNAME=''
+  #DB_PASSWORD=''
+  #DB_DATABASE=''
+  
+  APP_PORT=3000
+  #JWT_SECRET=''
+
