@@ -18,6 +18,12 @@ export class CreateFinanciamentoDto {
     status: string; */
 
     @ApiProperty({
+        example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        description: 'Descrição do objeto'
+    })
+    descricao: string;
+
+    @ApiProperty({
         example: 1,
         description: 'Id do usuário responsável por realizar o pagamento'
     })
