@@ -52,8 +52,18 @@ export class FinanciamentoController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFinanciamentoDto: UpdateFinanciamentoDto) {
-    return this.financiamentoService.update(+id, updateFinanciamentoDto);
+  async update(@Param('id') id: number, @Body() updateFinanciamentoDto: UpdateFinanciamentoDto, @Res() res) {
+    try{
+      let response = await this.financiamentoService.update(id, updateFinanciamentoDto)
+      if(response.message){
+        res.status(200).send(response)
+      }
+      else{
+        res.status(404).send(response)
+      } 
+    }catch(error){
+      console.log(error)
+    }
   }
 
   @Delete(':id')

@@ -74,8 +74,26 @@ export class FinanciamentoService {
     });
   }
 
-  update(id: number, updateFinanciamentoDto: UpdateFinanciamentoDto) {
-    return `This action updates a #${id} financiamento`;
+  async update(id: number, updateFinanciamentoDto: UpdateFinanciamentoDto) {
+    let financiamento = await this.financiamentoModel.findByPk(id);
+
+    if(!financiamento){
+      return {error: `Financiamento id ${id} não encontrado`}
+    }
+
+    const t = await this.sequelize.transaction();
+    try{
+      await financiamento.update({...updateFinanciamentoDto});
+      await t.commit();
+
+      return {message: `Financiamento id ${id} atualizado com sucesso`}
+    }
+    catch(error){
+      await t.rollback();
+      console.log(error)
+    }
+
+    
   }
 
   async remove(id: number) {
