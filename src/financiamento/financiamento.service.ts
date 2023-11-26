@@ -22,9 +22,10 @@ export class FinanciamentoService {
     private readonly sequelize: Sequelize,
   ) { }
 
-  async create(createFinanciamentoDto: CreateFinanciamentoDto, img) {
+  async create(createFinanciamentoDto: CreateFinanciamentoDto, img, user: any) {
     const t = await this.sequelize.transaction();
-
+    createFinanciamentoDto.id_pagador = user.id
+    createFinanciamentoDto.id_responsavel = user.id
     try {
       var newFinanciamento = await this.financiamentoModel.create({
         ...createFinanciamentoDto,

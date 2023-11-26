@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPipe, Res, HttpException, HttpStatus, Req, UseInterceptors, UploadedFile, MaxFileSizeValidator, FileTypeValidator, ParseFilePipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPipe, Res, HttpException, HttpStatus, Req, UseInterceptors, UploadedFile, MaxFileSizeValidator, FileTypeValidator, ParseFilePipe, Headers } from '@nestjs/common';
 import { FinanciamentoService } from './financiamento.service';
 import { CreateFinanciamentoDto } from './dto/create-financiamento.dto';
 import { UpdateFinanciamentoDto } from './dto/update-financiamento.dto';
@@ -7,6 +7,7 @@ import { FiltroFinanciamentoDto } from './dto/filtro-finaciamento.dto';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateParcelamentoDto } from './dto/update-parcelamento.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @ApiTags('Financiamento')
 @Controller('financiamento')
@@ -14,22 +15,26 @@ import { UpdateParcelamentoDto } from './dto/update-parcelamento.dto';
 export class FinanciamentoController {
   constructor(
     private readonly financiamentoService: FinanciamentoService,
+    private readonly authService: AuthService
     ) { }
   
   //@ApiConsumes('multipart/form-data') 
   @Post()
   @UseInterceptors(FileInterceptor('img_objeto'))
-  create(
+  async create(
+    @Headers() headers,
     @Body() createFinanciamentoDto: CreateFinanciamentoDto,
     @UploadedFile(new ParseFilePipe({
       validators: [
-        new MaxFileSizeValidator({ maxSize: 10000000 }),
+        new MaxFileSizeValidator({ maxSize: 10000000 }), 
         new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
       ],
       fileIsRequired:false
     })) img: Express.Multer.File
 ) {
-    return this.financiamentoService.create(createFinanciamentoDto, img);
+    const [bearer, token] = headers.authorization.split(' ');
+    let user = await this.authService.verifyCredential(token);
+    return this.financiamentoService.create(createFinanciamentoDto, img, user);
   }
 
   @Get()
