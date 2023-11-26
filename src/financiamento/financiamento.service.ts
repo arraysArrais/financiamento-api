@@ -78,8 +78,26 @@ export class FinanciamentoService {
     return `This action updates a #${id} financiamento`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} financiamento`;
+  async remove(id: number) {
+    let financiamento = await this.financiamentoModel.findByPk(id);
+
+    if(!financiamento){
+      return {error: `Financiamento id ${id} não encontrado`}
+    }
+    const t = await this.sequelize.transaction();
+    try{
+      await financiamento.destroy({
+        transaction: t
+      });
+      await t.commit();
+
+      return {message: `Financiamento id ${id} excluído com sucesso`}
+    }
+    catch(error){
+      await t.rollback();
+      console.log(error)
+    }
+    
   }
 
   async baixaFatura(id: number, img){

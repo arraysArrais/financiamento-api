@@ -57,8 +57,19 @@ export class FinanciamentoController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.financiamentoService.remove(+id);
+  async remove(@Param('id') id: number, @Res() res) {
+    try{
+      let response = await this.financiamentoService.remove(id);
+      if(response.message){
+        res.status(200).send(response)
+      }
+      else{
+        res.status(404).send(response)
+      } 
+    }catch(error){
+      console.log(error)
+    }
+    
   }
 
   @ApiConsumes('multipart/form-data')
