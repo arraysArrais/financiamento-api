@@ -27,6 +27,9 @@ export class Financiamento extends Model {
     @Column({ allowNull: false, type: DataType.STRING })
     objeto: string;
 
+    @Column({ allowNull: false, type: DataType.TEXT })
+    descricao: string;
+
     /*@Default(StatusFinanciamentoEnum.PENDENTE)
     @Column({
         allowNull: false,
