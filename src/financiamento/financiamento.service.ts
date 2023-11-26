@@ -7,6 +7,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Parcela } from './entities/parcelamento.entity';
 import { StatusParcelaEnum } from './enum/status_parcela.enum';
 import { FiltroFinanciamentoDto } from './dto/filtro-finaciamento.dto';
+import { UpdateParcelamentoDto } from './dto/update-parcelamento.dto';
 const dayjs = require('dayjs')
 
 @Injectable()
@@ -148,6 +149,28 @@ export class FinanciamentoService {
       },
       order:[['data_vencimento', 'ASC']]
     });
+  }
+
+  async updateParcela(id: number, updateParcelaDto: UpdateParcelamentoDto) {
+    let parcela = await this.parcelaModel.findByPk(id);
+
+    if(!parcela){
+      return {error: `Parcela id ${id} não encontrada`}
+    }
+
+    const t = await this.sequelize.transaction();
+    try{
+      await parcela.update({...updateParcelaDto});
+      await t.commit();
+
+      return {message: `Parcela id ${id} atualizada com sucesso`}
+    }
+    catch(error){
+      await t.rollback();
+      console.log(error)
+    }
+
+    
   }
 
   async getComprovante(id: number){

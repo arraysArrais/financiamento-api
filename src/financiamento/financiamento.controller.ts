@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FiltroFinanciamentoDto } from './dto/filtro-finaciamento.dto';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateParcelamentoDto } from './dto/update-parcelamento.dto';
 
 @ApiTags('Financiamento')
 @Controller('financiamento')
@@ -135,5 +136,20 @@ export class FinanciamentoController {
       console.log(error)
     }
     return this.financiamentoService.getComprovante(id);
+  }
+
+  @Patch('parcela/:parcela_id')
+  async updateParcela(@Param('parcela_id') id: number, @Body() updateParcelamentoDto: UpdateParcelamentoDto, @Res() res){
+    try{
+      let response = await this.financiamentoService.updateParcela(id, updateParcelamentoDto)
+      if(response.message){
+        res.status(200).send(response)
+      }
+      else{
+        res.status(404).send(response)
+      } 
+    }catch(error){
+      console.log(error)
+    }
   }
 }
