@@ -26,7 +26,7 @@ export class FinanciamentoController {
     @Body() createFinanciamentoDto: CreateFinanciamentoDto,
     @UploadedFile(new ParseFilePipe({
       validators: [
-        new MaxFileSizeValidator({ maxSize: 10000000 }), 
+        new MaxFileSizeValidator({ maxSize: 5242880 }), 
         new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
       ],
       fileIsRequired:false
