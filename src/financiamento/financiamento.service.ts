@@ -9,6 +9,7 @@ import { StatusParcelaEnum } from './enum/status_parcela.enum';
 import { FiltroFinanciamentoDto } from './dto/filtro-finaciamento.dto';
 import { UpdateParcelamentoDto } from './dto/update-parcelamento.dto';
 import * as sharp from 'sharp'
+import { enviaEmail } from 'src/helpers/mail';
 const dayjs = require('dayjs')
 
 @Injectable()
@@ -132,7 +133,29 @@ export class FinanciamentoService {
   }
 
   async baixaFatura(id: number, img) {
-    let parcela = await this.parcelaModel.findByPk(id);
+
+    //console.log(img)
+    
+    let parcela = await this.parcelaModel.findByPk(id,{
+      include:[
+        {
+          association:'financiamento',
+          required: true,
+          include:[
+            {
+              association: 'pagador',
+              attributes:['firstname', 'email'],
+              required: true
+            },
+            {
+              association: 'responsavel',
+              attributes:['firstname', 'email'],
+              required: true
+            }
+          ]
+        }
+      ]
+    });
     const t = await this.sequelize.transaction();
 
     try {
@@ -141,6 +164,10 @@ export class FinanciamentoService {
         img_comprovante_tipo: img.mimetype,
         status: StatusParcelaEnum.PAGA
       });
+
+      //notifica por e-mail
+      enviaEmail(parcela, img);
+
       await t.commit();
       return parcela;
     } catch (error) {
