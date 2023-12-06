@@ -13,17 +13,19 @@ export class UsersService {
     private readonly sequelize: Sequelize,
   ){}
 
-  create(createUserDto: CreateUserDto) {
+/*   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
+  } */
+
+  async findAll() {
+    return await this.userModel.findAll({
+      attributes:['id', 'firstname', 'lastname', 'fullname']
+    });
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
+ /*  findOne(id: number) {
     return;
-  }
+  } */
 
   async findByEmail(email: string): Promise<User>{
     return await this.userModel.findOne({
@@ -40,8 +42,8 @@ export class UsersService {
 
     console.log('new password!', user.password); */
   }
-1
-  remove(id: number) {
+
+  /* remove(id: number) {
     return `This action removes a #${id} user`;
-  }
+  } */
 }

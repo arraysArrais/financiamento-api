@@ -15,17 +15,17 @@ export class UsersController {
     return req.user;
   } */
 
-  @Post()
+ /*  @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
-  }
+  } */
 
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
+/*   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
@@ -38,5 +38,5 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
-  }
+  } */
 }
