@@ -27,7 +27,8 @@ export async function enviaEmail(parcela: Parcela, comprovante: Express.Multer.F
                     resp_name: parcela.financiamento.responsavel.firstname,
                     data_vencimento: vencimento.format('DD/MM/YYYY'),
                     valor: `R$ ${parcela.valor}`,
-                    pag_name: parcela.financiamento.pagador.firstname
+                    pag_name: parcela.financiamento.pagador.firstname,
+                    subject: `Baixa de fatura - ${parcela.financiamento.objeto} - ${vencimento.format('DD/MM/YYYY')}`
                 }
             }
         ],
