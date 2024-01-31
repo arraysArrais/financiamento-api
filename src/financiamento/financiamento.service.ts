@@ -220,4 +220,13 @@ export class FinanciamentoService {
       comprovante_tipo: parcela.img_comprovante_tipo
     }
   }
+
+  async getCodBarra(id: number){
+    let codBarra = await this.parcelaModel.findByPk(id);
+
+    return {
+        id: codBarra.id,
+        code: codBarra.codigo_barras
+    }
+  }
 }

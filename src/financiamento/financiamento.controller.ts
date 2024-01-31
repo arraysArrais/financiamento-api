@@ -157,4 +157,18 @@ export class FinanciamentoController {
       console.log(error)
     }
   }
+
+  @Get('parcela/barcode/:parcela_id')
+  async getBarCode(@Param('parcela_id') id: number, @Res() res){
+    try{
+      let response = await this.financiamentoService.getCodBarra(id);
+
+      if(response.code){
+        res.status(200).send(response);
+      }
+    }catch(error){
+      console.log("Erro ao buscar código de barra da parcela", error)
+      res.status(404).send({message: 'Parcela não encontrada'});
+    }
+  }
 }

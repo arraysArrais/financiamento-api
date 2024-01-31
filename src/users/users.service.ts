@@ -36,11 +36,11 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    /* let user = await this.userModel.findByPk(1);
+    let user = await this.userModel.findByPk(1);
     user.password = '123456';
     user.save()
 
-    console.log('new password!', user.password); */
+    console.log('new password!', user.password);
   }
 
   /* remove(id: number) {

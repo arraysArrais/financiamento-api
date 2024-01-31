@@ -52,6 +52,12 @@ export class Parcela extends Model {
     })
     img_comprovante_tipo: string;
 
+    @Column({
+        allowNull: true,
+        type: DataType.STRING
+    })
+    codigo_barras: string;
+
     //FK
     @ForeignKey(() => Financiamento)
     @Column({ allowNull: false, type: DataType.INTEGER })
