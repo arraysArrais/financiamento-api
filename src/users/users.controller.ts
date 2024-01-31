@@ -26,9 +26,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Public()
+  /* @Public()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
-  }
+  } */
 }
