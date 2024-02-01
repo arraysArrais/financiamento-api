@@ -133,21 +133,21 @@ export class FinanciamentoService {
   async baixaFatura(id: number, img) {
 
     //console.log(img)
-    
-    let parcela = await this.parcelaModel.findByPk(id,{
-      include:[
+
+    let parcela = await this.parcelaModel.findByPk(id, {
+      include: [
         {
-          association:'financiamento',
+          association: 'financiamento',
           required: true,
-          include:[
+          include: [
             {
               association: 'pagador',
-              attributes:['firstname', 'email'],
+              attributes: ['firstname', 'email'],
               required: true
             },
             {
               association: 'responsavel',
-              attributes:['firstname', 'email'],
+              attributes: ['firstname', 'email'],
               required: true
             }
           ]
@@ -221,12 +221,14 @@ export class FinanciamentoService {
     }
   }
 
-  async getCodBarra(id: number){
+  async getCodBarra(id: number) {
     let codBarra = await this.parcelaModel.findByPk(id);
-
+    if(!codBarra)
+      return {error: "Parcela não encontrada"}
+    
     return {
-        id: codBarra.id,
-        code: codBarra.codigo_barras
+      id: codBarra.id,
+      code: codBarra.codigo_barras
     }
   }
 }

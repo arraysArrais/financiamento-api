@@ -8,7 +8,6 @@ import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateParcelamentoDto } from './dto/update-parcelamento.dto';
 import { AuthService } from 'src/auth/auth.service';
-
 @ApiTags('Financiamento')
 @Controller('financiamento')
 @ApiBearerAuth('JWT-auth') //permite autenticação do controller inteiro na swagger ui
@@ -16,8 +15,8 @@ export class FinanciamentoController {
   constructor(
     private readonly financiamentoService: FinanciamentoService,
     private readonly authService: AuthService
-    ) { }
-  
+  ) { }
+
   //@ApiConsumes('multipart/form-data') 
   @Post()
   @UseInterceptors(FileInterceptor('img_objeto'))
@@ -26,12 +25,12 @@ export class FinanciamentoController {
     @Body() createFinanciamentoDto: CreateFinanciamentoDto,
     @UploadedFile(new ParseFilePipe({
       validators: [
-        new MaxFileSizeValidator({ maxSize: 5242880 }), 
+        new MaxFileSizeValidator({ maxSize: 5242880 }),
         new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
       ],
-      fileIsRequired:false
+      fileIsRequired: false
     })) img: Express.Multer.File
-) {
+  ) {
     const [bearer, token] = headers.authorization.split(' ');
     let user = await this.authService.verifyCredential(token);
     return this.financiamentoService.create(createFinanciamentoDto, img, user);
@@ -59,33 +58,33 @@ export class FinanciamentoController {
 
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateFinanciamentoDto: UpdateFinanciamentoDto, @Res() res) {
-    try{
+    try {
       let response = await this.financiamentoService.update(id, updateFinanciamentoDto)
-      if(response.message){
+      if (response.message) {
         res.status(200).send(response)
       }
-      else{
+      else {
         res.status(404).send(response)
-      } 
-    }catch(error){
+      }
+    } catch (error) {
       console.log(error)
     }
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number, @Res() res) {
-    try{
+    try {
       let response = await this.financiamentoService.remove(id);
-      if(response.message){
+      if (response.message) {
         res.status(200).send(response)
       }
-      else{
+      else {
         res.status(404).send(response)
-      } 
-    }catch(error){
+      }
+    } catch (error) {
       console.log(error)
     }
-    
+
   }
 
   @ApiConsumes('multipart/form-data')
@@ -102,73 +101,75 @@ export class FinanciamentoController {
       new MaxFileSizeValidator({ maxSize: 10000000 }),
       new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
     ],
-    fileIsRequired:false
+    fileIsRequired: false
   })) img: Express.Multer.File, @Param('parcela_id') id: number, @Res() res) {
     console.log(img)
 
     let parcela = await this.financiamentoService.baixaFatura(id, img)
-    
-    if(parcela){
-      res.status(200).send({message:"Parcela "+parcela.id+" atualizada com sucesso." })
+
+    if (parcela) {
+      res.status(200).send({ message: "Parcela " + parcela.id + " atualizada com sucesso." })
     }
   }
 
   @Get('parcela/:parcela_id')
-  async getParcela(@Param('parcela_id') id: number){
+  async getParcela(@Param('parcela_id') id: number) {
     return this.financiamentoService.getFatura(id)
   }
 
   @Get('parcelas/:financiamento_id')
-  async findAllParcelas(@Param('financiamento_id') id: number, @Res() res){
+  async findAllParcelas(@Param('financiamento_id') id: number, @Res() res) {
 
-    try{
+    try {
       let parcelas = await this.financiamentoService.findAllParcelas(id)
-      if(parcelas.length > 0)
+      if (parcelas.length > 0)
         res.status(200).send(parcelas);
       else
-        res.status(404).send({error: "Financiamento não encontrado"})
-    }catch(error){
+        res.status(404).send({ error: "Financiamento não encontrado" })
+    } catch (error) {
       console.log(error)
     }
   }
 
   @Get('parcela/comprovante/:parcela_id')
-  async getComprovate(@Param('parcela_id') id: number, @Res() res){
-    try{
+  async getComprovate(@Param('parcela_id') id: number, @Res() res) {
+    try {
       let base64String = await this.financiamentoService.getComprovante(id)
       res.status(200).send(base64String)
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
     return this.financiamentoService.getComprovante(id);
   }
 
   @Patch('parcela/:parcela_id')
-  async updateParcela(@Param('parcela_id') id: number, @Body() updateParcelamentoDto: UpdateParcelamentoDto, @Res() res){
-    try{
+  async updateParcela(@Param('parcela_id') id: number, @Body() updateParcelamentoDto: UpdateParcelamentoDto, @Res() res) {
+    try {
       let response = await this.financiamentoService.updateParcela(id, updateParcelamentoDto)
-      if(response.message){
+      if (response.message) {
         res.status(200).send(response)
       }
-      else{
+      else {
         res.status(404).send(response)
-      } 
-    }catch(error){
+      }
+    } catch (error) {
       console.log(error)
     }
   }
 
   @Get('parcela/barcode/:parcela_id')
-  async getBarCode(@Param('parcela_id') id: number, @Res() res){
-    try{
+  async getBarCode(@Param('parcela_id') id: number, @Res() res) {
+    try {
       let response = await this.financiamentoService.getCodBarra(id);
-
-      if(response.code){
-        res.status(200).send(response);
+      if(response.error){
+        res.status(404).send(response)
       }
-    }catch(error){
-      console.log("Erro ao buscar código de barra da parcela", error)
-      res.status(404).send({message: 'Parcela não encontrada'});
+      else{
+        res.status(200).send(response)
+      }
+    } catch (error) {
+      console.log("Erro ao buscar parcela: ",error.message)
+      throw error;
     }
   }
 }
